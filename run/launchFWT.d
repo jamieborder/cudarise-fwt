@@ -13,7 +13,7 @@ import cuda_d.cublas_api;
 
 void main()
 {
-    const int numFWTs = 1000;
+    const int numFWTs = 1000000;
     const int Pa = 5;
     const int Na = 2^^Pa;
     const int N  = numFWTs * Na;
