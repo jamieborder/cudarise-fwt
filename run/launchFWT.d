@@ -13,7 +13,8 @@ import cuda_d.cublas_api;
 
 void main()
 {
-    const int numFWTs = 1000000;
+    // const int numFWTs = 1000000;
+    const int numFWTs = 1;
     const int Pa = 5;
     const int Na = 2^^Pa;
     const int N  = numFWTs * Na;
@@ -46,8 +47,8 @@ void main()
     Fa.length = N;
     for(int i=0;i<N;i++) {
         // fi[i] = 0.0;
-        fi[i] = 1.0;
-        // fi[i] = i;
+        // fi[i] = 1.0;
+        fi[i] = i;
         // fi[i] = sin(i*0.05);
     }
 
@@ -100,10 +101,10 @@ void main()
     }
     auto cpuTime = MonoTime.currTime - startTime;
 
-    // writeln("Fa_gpu = \n", Fa);
+    writeln("Fa_gpu = \n", Fa);
     writeln("time for GPU: ", gpuTime);
 
-    // writeln("Fa_cpu = \n", Fa_cpu);
+    writeln("Fa_cpu = \n", Fa_cpu);
     writeln("time for CPU: ", cpuTime);
 
     writeln("GPU speed-up: ", cpuTime.total!"usecs"

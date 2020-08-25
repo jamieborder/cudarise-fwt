@@ -25,19 +25,28 @@ __global__ void FWT(float *fi, float *Fa, int *seq, const int Pa,
     // trying to hide memory pull with ops
     seqi = seq[tid];
 
-    int Nm = 1;
+    int Nm = Na/2;
     for(int pm=0;pm<Pa;pm++) {
         // calculate negMask
-        negMask = (((tid >> pm) & 1LU) * 2 - 1) * -1;    // 1 or -1
+        negMask = (((tid >> (Pa-pm-1)) & 1LU) * 2 - 1) * -1;    // 1 or -1
 
         // calculate src mask
-        srcMask = (tid >> pm) & 1LU; // 0 or 1
+        //srcMask = (tid >> (Pa-pm-1)) & 1LU; // 0 or 1
+        srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
+        if (tid == 2) {
+            printf("tid:%d, pm=%d, srcMask=%d, Nm=%d, negMask=%d\n",
+                    tid, pm, srcMask, Nm, negMask);
+        }
 
         // apply warp shuffle down
         F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
 
         // flip mask
         srcMask ^= 1LU;
+        if (tid == 2) {
+            printf("tid:%d, pm=%d, srcMask=%d, Nm=%d, negMask=%d\n",
+                    tid, pm, srcMask, Nm, negMask);
+        }
 
         // apply warp shuffle up
         F2 += srcMask * __shfl_up_sync(0xFFFFFFFF, F1, Nm);
@@ -46,7 +55,8 @@ __global__ void FWT(float *fi, float *Fa, int *seq, const int Pa,
         F1 = F1 * negMask + F2;
 
         // update shfl width
-        Nm <<= 1;
+        // Nm <<= 1;
+        Nm >>= 1;
     }
 
     // write to global memory
