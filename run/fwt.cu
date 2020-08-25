@@ -4,8 +4,6 @@ __global__ void FWT(float *fi, float *Fa, int *seq, const int Pa,
         const int Na, const int N)
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;    // thread Id
-    //int lid = tid % 32;                                 // lane Id
-    //int bid = blockIdx.x;                               // block Id
 
     float F1; // storing last value
     float F2; // will be shuffled, all threads have one
@@ -63,21 +61,6 @@ extern "C"
             float *fi, float *Fa, int *seq, const int blockDimX,
             const int gridDimX)
     {
-        // each individual FWT size
-        // const int Pa = 3;
-        // const int Na = pow(Pa, 2);
-
-        // total array of data size
-        // const int N;
-        // float *fi; // input
-        // float *Fa; // output
-
-        // sequency mapping
-        // float *seq;
-        // for (int i=0;i<N;i++) {
-            // Fa[i] = i*1.0;
-        // }
-
         dim3 blockSize(blockDimX, 1, 1);
         dim3 gridSize( gridDimX, 1, 1);
 
