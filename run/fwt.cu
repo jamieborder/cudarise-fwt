@@ -1,16 +1,16 @@
 #include <stdio.h>
 
-__global__ void FWT(float *fi, float *Fa, float *seq, const int Pa,
+__global__ void FWT(float *fi, float *Fa, int *seq, const int Pa,
         const int Na, const int N)
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;    // thread Id
-    int lid = tid % 32;                                 // lane Id
-    int bid = blockIdx.x;                               // block Id
+    //int lid = tid % 32;                                 // lane Id
+    //int bid = blockIdx.x;                               // block Id
 
     float F1; // storing last value
     float F2; // will be shuffled, all threads have one
 
-    float seqi; // where in memory to put value
+    int seqi; // where in memory to put value
 
     // calculate whether mem pull will be made neg
     // [0:1] -> [0:2] -> [-1:1] -> [1:-1]
@@ -27,7 +27,7 @@ __global__ void FWT(float *fi, float *Fa, float *seq, const int Pa,
     // trying to hide memory pull with ops
     seqi = seq[tid];
 
-    Nm = 1;
+    int Nm = 1;
     for(int pm=0;pm<Pa;pm++) {
         // calculate negMask
         negMask = (((tid >> pm) & 1LU) * 2 - 1) * -1;    // 1 or -1
@@ -48,36 +48,45 @@ __global__ void FWT(float *fi, float *Fa, float *seq, const int Pa,
         F1 = F1 * negMask + F2;
 
         // update shfl width
-        Nm <<= 1
+        Nm <<= 1;
     }
 
     // write to global memory
     Fa[(tid / 32) * 32 + seqi] = F1;
+
+    return;
 }
 
 extern "C"
 {
+    void run_FWT(const int Pa, const int Na, const int N,
+            float *fi, float *Fa, int *seq, const int blockDimX,
+            const int gridDimX)
+    {
+        // each individual FWT size
+        // const int Pa = 3;
+        // const int Na = pow(Pa, 2);
 
-// int main(int argc, char *argv)
-void run_FWT(const int Pa, const int Na, const int N,
-        float *fi, float *Fa, float *seq, const int blockDimX,
-        const int gridDimX)
-{
-    // each individual FWT size
-    // const int Pa = 3;
-    // const int Na = pow(Pa, 2);
+        // total array of data size
+        // const int N;
+        // float *fi; // input
+        // float *Fa; // output
 
-    // total array of data size
-    // const int N;
-    // float *fi; // input
-    // float *Fa; // output
+        // sequency mapping
+        // float *seq;
+        // for (int i=0;i<N;i++) {
+            // Fa[i] = i*1.0;
+        // }
 
-    // sequency mapping
-    // float *seq;
+        dim3 blockSize(blockDimX, 1, 1);
+        dim3 gridSize( gridDimX, 1, 1);
 
-    dim3 blockSize = (blockDimX, 1, 1);
-    dim3 gridSize  = ( gridDimX, 1, 1);
-    FHT<<<gridSize, blockSize>>>(fi, Fa, seq, Pa, Na, N);
-}
+        FWT<<<gridSize, blockSize>>>(fi, Fa, seq, Pa, Na, N);
 
+        cudaError_t err = cudaDeviceSynchronize();
+
+        if (err != cudaSuccess) {
+            printf("%s\n", cudaGetErrorString(err));
+        }
+    }
 }

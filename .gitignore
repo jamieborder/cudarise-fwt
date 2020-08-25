@@ -1,4 +1,6 @@
 *seq
 *neg
+*prog
 
 *.o
+*.so
