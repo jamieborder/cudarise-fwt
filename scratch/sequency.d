@@ -1,25 +1,32 @@
-extern (C) void run_FWT(const int Pa, const int Na, const int N,
-        float *fi, float *Fa, float *seq, const int blockDimX,
-        const int gridDimX)
+// extern (C) void run_FWT(const int Pa, const int Na, const int N,
+        // float *fi, float *Fa, float *seq, const int blockDimX,
+        // const int gridDimX);
 
 import std.stdio;
 
-import cuda_d.cuda;
-import cuda_d.cuda_runtime_api;
-import cuda_d.cublas_api;
+// import cuda_d.cuda;
+// import cuda_d.cuda_runtime_api;
+// import cuda_d.cublas_api;
 
 void main()
 {
-    int P = 4;
+    int P = 3;
     int N = 2^^P;
 
     int[] s;
     s.length = N;
-    for(int i=1;i<N;i++) {
+    for(int i=0;i<N;i++) {
         s[i] = i;
     }
     auto k = getSequence(s, N, P);
-    writeln(k);
+    writeln("k\n", k);
+
+    int[] krev;
+    krev.length = k.length;
+    for(int i=0;i<N;i++) {
+        krev[k[i]] = i;
+    }
+    writeln("krev\n", krev);
 
     int i = 1;
     foreach (j; 0 .. 10) {
