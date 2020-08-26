@@ -1,0 +1,59 @@
+
+# log
+1
+time for CPU: 7 μs and 5 hnsecs
+time for GPU: 619 μs and 5 hnsecs
+
+10
+time for CPU: 51 μs and 5 hnsecs
+time for GPU: 368 μs and 1 hnsec
+
+100
+time for CPU: 510 μs and 6 hnsecs
+time for GPU: 368 μs
+
+1000
+time for CPU: 5 ms, 589 μs, and 8 hnsecs
+time for GPU: 377 μs and 7 hnsecs
+
+10000
+time for CPU: 49 ms, 700 μs, and 2 hnsecs
+time for GPU: 465 μs and 7 hnsecs
+
+100000
+time for CPU: 507 ms, 13 μs, and 9 hnsecs
+time for GPU: 1 ms, 250 μs, and 6 hnsecs
+
+1000000
+time for CPU: 5 secs, 180 ms, 254 μs, and 1 hnsec
+time for GPU: 9 ms, 139 μs, and 5 hnsecs
+
+# log2
+
+1
+time for GPU: 389 μs and 3 hnsecs
+time for CPU: 7 μs and 8 hnsecs
+
+10
+time for GPU: 405 μs and 5 hnsecs
+time for CPU: 56 μs and 9 hnsecs
+
+100
+time for GPU: 401 μs and 8 hnsecs
+time for CPU: 476 μs
+
+1000
+time for GPU: 372 μs and 7 hnsecs
+time for CPU: 5 ms, 421 μs, and 3 hnsecs
+
+10000
+time for GPU: 477 μs and 9 hnsecs
+time for CPU: 51 ms, 495 μs, and 8 hnsecs
+
+100000
+time for GPU: 1 ms, 247 μs, and 5 hnsecs
+time for CPU: 507 ms, 62 μs, and 2 hnsecs
+
+1000000
+time for GPU: 9 ms, 124 μs, and 4 hnsecs
+time for CPU: 5 secs, 107 ms, 994 μs, and 2 hnsecs

@@ -69,6 +69,15 @@ void main(string[] args)
         // fi[i] = sin(i*0.05);
     }
 
+    // calculate cuda blocks / grid required
+    int blockDimX = 32;
+    int gridDimX  = (N + 32 - 1) / 32;
+
+    if (verb > 1) {
+        writefln("launch with blockDim = (%d, 1, 1)", blockDimX);
+        writefln("launch with  gridDim = (%d, 1, 1)", gridDimX);
+    }
+
     // set-up device side data
     float* d_fi, d_Fa; // D-style pointers
     int* d_seq;
@@ -83,15 +92,6 @@ void main(string[] args)
             cudaMemcpyKind.cudaMemcpyHostToDevice );
     cudaMemcpy( cast(void*)d_seq, cast(void*)seq, numBytesInt,
             cudaMemcpyKind.cudaMemcpyHostToDevice );
-
-    // calculate cuda blocks / grid required
-    int blockDimX = 32;
-    int gridDimX  = (N + 32 - 1) / 32;
-
-    if (verb > 1) {
-        writefln("launch with blockDim = (%d, 1, 1)", blockDimX);
-        writefln("launch with  gridDim = (%d, 1, 1)", gridDimX);
-    }
 
     auto startTime = MonoTime.currTime;
 

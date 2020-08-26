@@ -1,0 +1,65 @@
+1
+number of FWTs :: 1
+Pa = 5, Na = 32, N = 32
+number of cells :: 16
+time for GPU: 401 μs and 4 hnsecs
+time for CPU: 41 μs and 3 hnsecs
+GPU speed-up: 0
+
+10
+number of FWTs :: 10
+Pa = 5, Na = 32, N = 320
+number of cells :: 160
+time for GPU: 381 μs and 8 hnsecs
+time for CPU: 63 μs and 9 hnsecs
+GPU speed-up: 0
+
+100
+number of FWTs :: 100
+Pa = 5, Na = 32, N = 3200
+number of cells :: 1600
+time for GPU: 399 μs and 2 hnsecs
+time for CPU: 530 μs and 4 hnsecs
+GPU speed-up: 1
+
+1000
+number of FWTs :: 1000
+Pa = 5, Na = 32, N = 32000
+number of cells :: 16000
+time for GPU: 450 μs and 8 hnsecs
+time for CPU: 6 ms, 259 μs, and 4 hnsecs
+GPU speed-up: 13
+
+10000
+number of FWTs :: 10000
+Pa = 5, Na = 32, N = 320000
+number of cells :: 160000
+time for GPU: 820 μs and 5 hnsecs
+time for CPU: 54 ms, 291 μs, and 8 hnsecs
+GPU speed-up: 66
+
+100000
+number of FWTs :: 100000
+Pa = 5, Na = 32, N = 3200000
+number of cells :: 1600000
+time for GPU: 6 ms, 438 μs, and 8 hnsecs
+time for CPU: 535 ms and 31 μs
+GPU speed-up: 83
+
+1000000
+number of FWTs :: 1000000
+Pa = 5, Na = 32, N = 32000000
+number of cells :: 16000000
+time for GPU: 39 ms, 318 μs, and 8 hnsecs
+time for CPU: 5 secs, 255 ms, 816 μs, and 5 hnsecs
+GPU speed-up: 133
+
+10000000
+number of FWTs :: 10000000
+Pa = 5, Na = 32, N = 320000000
+number of cells :: 160000000
+an illegal memory access was encountered
+time for GPU: 154 ms, 995 μs, and 7 hnsecs
+time for CPU: 52 secs, 665 ms, 665 μs, and 2 hnsecs
+GPU speed-up: 339
+

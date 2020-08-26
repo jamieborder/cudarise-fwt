@@ -49,9 +49,30 @@ GPU speed-up: 405
 1000000
 number of FWTs :: 1000000
 Pa = 5, Na = 32, N = 32000000
-number of cells :: 16000000
+number of cells :: 16,000,000
 time for GPU: 9 ms, 139 μs, and 5 hnsecs
 time for CPU: 5 secs, 180 ms, 254 μs, and 1 hnsec
 GPU speed-up: 566
 
 10000000
+number of FWTs :: 10000000
+Pa = 5, Na = 32, N = 320000000
+number of cells :: 160000000
+an illegal memory access was encountered
+time for GPU: 4 ms, 826 μs, and 6 hnsecs
+time for CPU: 53 secs, 624 ms, 234 μs, and 8 hnsecs
+GPU speed-up: 11111
+
+100000000
+number of FWTs :: 100000000
+Pa = 5, Na = 32, N = -1094967296
+number of cells :: 1600000000
+
+1000000000
+number of FWTs :: 1000000000
+Pa = 5, Na = 32, N = 1935228928
+number of cells :: -1179869184
+
+10000000000
+./prog [numFWTs] [Pa] [verbosity]
+
