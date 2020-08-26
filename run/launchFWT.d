@@ -57,7 +57,7 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
         const int N, const int verb, ref long[4] times)
 {
     if (verb > 0) {
-        writefln(" ~~ GPU Accelerated Fast Walsh Transform ~~ ");
+        writefln(" ~~ CUDA Accelerated Fast Walsh Transform ~~ ");
         writefln("\tnumber of FWTs = %d", numFWTs);
         writefln("\tPa = %d, Na = %d, N = %d", Pa, Na, N);
         writefln("\tnumber of cells = %d", Na / 2 * numFWTs);

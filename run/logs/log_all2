@@ -1,15 +1,6 @@
-1
    numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
-         1   0.005   0.052    0.007   0.006
-10
-   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
-        10   0.050   0.053    0.010   0.006
-100
-   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
-       100   0.565   0.054    0.008   0.006
-1000
-   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
-      1000   5.081   0.078    0.026   0.014
-10000
-   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
-     10000  52.084   0.197    0.228   0.079
+         1   0.005    0.052   0.007   0.006
+        10   0.050    0.053   0.010   0.006
+       100   0.565    0.054   0.008   0.006
+      1000   5.081    0.078   0.026   0.014
+     10000  52.084    0.197   0.228   0.079

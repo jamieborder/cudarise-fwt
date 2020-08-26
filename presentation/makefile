@@ -28,7 +28,8 @@ clean :
 	rm $(file:=.ilg) $(file:=.lof) $(file:=.log) || true
 	rm $(file:=.nav) $(file:=.lot) $(file:=.nlo) || true
 	rm $(file:=.nls) $(file:=.out) $(file:=.toc) || true
-	rm $(file:=.pdf) $(file:=.snm) || true
+	rm $(file:=.snm) || true
+#rm $(file:=.pdf) 
 
 	ls -lgh
 
