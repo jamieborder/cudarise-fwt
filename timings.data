@@ -1,0 +1,4 @@
+Title   CPU   GPU_mem GPU
+"CPU"                6   4   10
+"GPU+mem transfer"   6   3   4
+"GPU"                3   1   2
