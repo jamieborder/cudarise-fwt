@@ -1,0 +1,23 @@
+\frametitle{\mybox {red}{blue}{CUDA C Kernel}}
+\framesubtitle{}
+        \vspace{-1.2cm}
+        \begin{columns}[t]
+            \begin{column}{0.3\textwidth}
+        \begin{figure}
+            \colorbox{white}{\includegraphics[width=1.0\textwidth,trim=0 0 0 0,clip]{wht.png}}
+            % \caption{}
+        \end{figure}
+        \vspace{-0.2cm}
+        \begin{figure}
+            % \colorbox{white}{\includegraphics[width=1.0\textwidth,trim=0 0 0 0,clip]{cudastructure.png}}
+            \colorbox{white}{\includegraphics[width=1.2\textwidth,trim=0 0 0 0,clip]{shfl.png}}
+            % \caption{}
+        \end{figure}
+            \end{column}
+            \begin{column}{0.7\textwidth}
+        \begin{figure}
+            \colorbox{white}{\includegraphics[width=1.0\textwidth,trim=0 0 0 0,clip]{kernel_src.png}}
+            % \caption{}
+        \end{figure}
+            \end{column}
+        \end{columns}

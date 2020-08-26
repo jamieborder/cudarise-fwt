@@ -1,0 +1,15 @@
+set term x11 noraise enhanced font "arial,15"
+set title "Residuals"
+set output "residualsImage.eps"
+
+set logscale y
+set format y "10^{%L}"
+
+plot "residuals.txt" u 0:1 title "mass"       w lines, \
+     "residuals.txt" u 0:2 title "momentum.x" w lines, \
+     "residuals.txt" u 0:3 title "totEnergy"  w lines
+
+pause 1
+bind "x" "unset output; exit gnuplot"
+reread
+        
