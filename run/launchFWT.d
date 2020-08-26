@@ -11,16 +11,34 @@ import cuda_d.cuda;
 import cuda_d.cuda_runtime_api;
 import cuda_d.cublas_api;
 
-void main()
+void main(string[] args)
 {
-    const int numFWTs = 1000000;
-    const int Pa = 5;
-    const int Na = 2^^Pa;
-    const int N  = numFWTs * Na;
+    // const int numFWTs = 1000000;
+    // const int numFWTs = 1;
+    // const int Pa = 5;
+    // const int Na = 2^^Pa;
+    // const int N  = numFWTs * Na;
+    int numFWTs = 1;
+    int Pa = 5;
+    int verb = 0;
+    if (args.length > 1) {
+        scope(failure) writeln("./prog [numFWTs] [Pa] [verbosity]");
+        numFWTs = to!int(args[1]);
+        if (args.length > 2) {
+            Pa = to!int(args[2]);
+            if (args.length > 3) {
+                verb = to!int(args[3]);
+            }
+        }
+    }
+    int Na = 2^^Pa;
+    int N  = numFWTs * Na;
 
-    writefln("number of FWTs :: %d", numFWTs);
-    writefln("Pa = %d, Na = %d, N = %d", Pa, Na, N);
-    writefln("number of cells :: %d", Na / 2 * numFWTs);
+    if (verb > 0) {
+        writefln("number of FWTs :: %d", numFWTs);
+        writefln("Pa = %d, Na = %d, N = %d", Pa, Na, N);
+        writefln("number of cells :: %d", Na / 2 * numFWTs);
+    }
 
     // calculate sequency mapping (same for each FWT)
     // give each their own array? or let read clash happen... (TODO)
@@ -46,9 +64,18 @@ void main()
     Fa.length = N;
     for(int i=0;i<N;i++) {
         // fi[i] = 0.0;
-        fi[i] = 1.0;
-        // fi[i] = i;
+        // fi[i] = 1.0;
+        fi[i] = i;
         // fi[i] = sin(i*0.05);
+    }
+
+    // calculate cuda blocks / grid required
+    int blockDimX = 32;
+    int gridDimX  = (N + 32 - 1) / 32;
+
+    if (verb > 1) {
+        writefln("launch with blockDim = (%d, 1, 1)", blockDimX);
+        writefln("launch with  gridDim = (%d, 1, 1)", gridDimX);
     }
 
     // set-up device side data
@@ -65,13 +92,6 @@ void main()
             cudaMemcpyKind.cudaMemcpyHostToDevice );
     cudaMemcpy( cast(void*)d_seq, cast(void*)seq, numBytesInt,
             cudaMemcpyKind.cudaMemcpyHostToDevice );
-
-    // calculate cuda blocks / grid required
-    int blockDimX = 32;
-    int gridDimX  = (N + 32 - 1) / 32;
-
-    writefln("launch with blockDim = (%d, 1, 1)", blockDimX);
-    writefln("launch with  gridDim = (%d, 1, 1)", gridDimX);
 
     auto startTime = MonoTime.currTime;
 
@@ -100,14 +120,18 @@ void main()
     }
     auto cpuTime = MonoTime.currTime - startTime;
 
-    // writeln("Fa_gpu = \n", Fa);
-    writeln("time for GPU: ", gpuTime);
+    if (verb > 1) {
+        writeln("Fa_gpu = \n", Fa);
+        writeln("Fa_cpu = \n", Fa_cpu);
+    }
 
-    // writeln("Fa_cpu = \n", Fa_cpu);
-    writeln("time for CPU: ", cpuTime);
+    if (verb > 0) {
+        writeln("time for GPU: ", gpuTime);
+        writeln("time for CPU: ", cpuTime);
 
-    writeln("GPU speed-up: ", cpuTime.total!"usecs"
-            / gpuTime.total!"usecs");
+        writeln("GPU speed-up: ", cpuTime.total!"usecs"
+                / gpuTime.total!"usecs");
+    }
 
     return;
 }

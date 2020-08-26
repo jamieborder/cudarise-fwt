@@ -9,7 +9,27 @@ void negPat(int *s, const int N, const int iter)
             // if ((tid >> i) & 1LU) {
                 // s[tid] = -1;
             // } 
-            s[tid] = (((tid >> i) & 1LU) * 2 - 1) * - 1;
+
+            //s[tid] = (((tid >> i) & 1LU) * 2 - 1) * - 1;
+            
+            s[tid] = (((tid >> (iter - i - 1)) & 1LU) * 2 - 1) * - 1;
+        }
+
+        for (int l=0;l<N;l++) {
+            printf("% d ", s[l]);
+            s[l] = 0;
+        }
+        printf("\n");
+    }
+}
+
+void srcPat(int *s, const int N, const int iter)
+{
+    for (int i=0;i<iter;i++) {
+        for (int tid=0;tid<N;tid++) {
+            //s[tid] = (((tid >> i) & 1LU) * 2 - 1) * - 1;
+            
+            s[tid] = ((tid >> (iter - i - 1)) & 1LU) ^ 1LU;
         }
 
         for (int l=0;l<N;l++) {
@@ -57,5 +77,9 @@ int main(int argc, char *argv)
     }
     
 
+    printf("neg Pattern: \n");
     negPat(s, N, 3);
+
+    printf("src Pattern: \n");
+    srcPat(s, N, 3);
 }

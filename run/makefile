@@ -33,4 +33,4 @@ install: launchFWT.d fwt.cu
 		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-lphobos2 -L-L. -L-lhwkernel
 
 run:
-	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT)
+	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT) 100 5 1
