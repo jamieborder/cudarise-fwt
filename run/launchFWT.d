@@ -1,6 +1,14 @@
-extern (C) void run_FWT(const int Pa, const int Na, const int N,
+extern (C) void run_FWT_SHFL(const int Pa, const int Na, const int N,
         float *fi, float *Fa, int *seq, const int blockDimX,
         const int gridDimX);
+
+extern (C) void run_FWT_GM(const int Pa, const int Na, const int N,
+        float *fi, float *Fa, int *seq, float *vec, const int blockDimX,
+        const int gridDimX);
+
+extern (C) void run_FWT_SM(const int Pa, const int Na, const int N,
+        float *fi, float *Fa, int *seq, const int blockDimX,
+        const int gridDimX, const int sMemSize);
 
 import std.stdio;
 import std.math: sin;
@@ -59,9 +67,11 @@ void main(string[] args)
     // (real data given by discrete function data (fi),
     //  modified as such:
     //   f = fi * dx / sqrt(xb - xa) ... (TODO) )
-    float[] fi, Fa;
+    float[] fi, Fa, Fa_GM, Fa_SM;
     fi.length = N;
     Fa.length = N;
+    Fa_GM.length = N;
+    Fa_SM.length = N;
     for(int i=0;i<N;i++) {
         // fi[i] = 0.0;
         // fi[i] = 1.0;
@@ -86,6 +96,10 @@ void main(string[] args)
     cudaMalloc( cast(void**)&d_fi , numBytesFloat );
     cudaMalloc( cast(void**)&d_Fa , numBytesFloat );
     cudaMalloc( cast(void**)&d_seq, numBytesInt );
+
+    // device side work array for GM kernel
+    float* d_vec;
+    cudaMalloc( cast(void**)&d_vec, numBytesFloat );
     
     /// copy data from host to device
     cudaMemcpy( cast(void*)d_fi , cast(void*)fi, numBytesFloat,
@@ -93,10 +107,13 @@ void main(string[] args)
     cudaMemcpy( cast(void*)d_seq, cast(void*)seq, numBytesInt,
             cudaMemcpyKind.cudaMemcpyHostToDevice );
 
+
+
+    /// ----- shfls -----
     auto startTime = MonoTime.currTime;
 
     // run kernel
-    run_FWT(Pa, Na, N, d_fi, d_Fa, d_seq, blockDimX, gridDimX);
+    run_FWT_SHFL(Pa, Na, N, d_fi, d_Fa, d_seq, blockDimX, gridDimX);
 
     // deviceSynchronize on C side
     auto gpuTime = MonoTime.currTime - startTime;
@@ -105,10 +122,45 @@ void main(string[] args)
     cudaMemcpy( cast(void*)Fa, cast(void*)d_Fa, numBytesFloat,
             cudaMemcpyKind.cudaMemcpyDeviceToHost );
 
+
+
+    /// ----- global memory -----
+    startTime = MonoTime.currTime;
+
+    // run kernel
+    run_FWT_GM(Pa, Na, N, d_fi, d_Fa, d_seq, d_vec, blockDimX, gridDimX);
+
+    // deviceSynchronize on C side
+    auto gpuTime_GM = MonoTime.currTime - startTime;
+
+    // copy data from device to host
+    cudaMemcpy( cast(void*)Fa_GM, cast(void*)d_Fa, numBytesFloat,
+            cudaMemcpyKind.cudaMemcpyDeviceToHost );
+
+
+
+    /// ----- shared memory -----
+    int sMemSize = to!int(Na * int.sizeof);
+    startTime = MonoTime.currTime;
+
+    // run kernel
+    run_FWT_SM(Pa, Na, N, d_fi, d_Fa, d_seq, blockDimX, gridDimX,
+            sMemSize);
+
+    // deviceSynchronize on C side
+    auto gpuTime_SM = MonoTime.currTime - startTime;
+
+    // copy data from device to host
+    cudaMemcpy( cast(void*)Fa_SM, cast(void*)d_Fa, numBytesFloat,
+            cudaMemcpyKind.cudaMemcpyDeviceToHost );
+
+
+
     // free memory on device
     cudaFree( d_fi );
     cudaFree( d_Fa );
     cudaFree( d_seq );
+    cudaFree( d_vec );
 
     float[] Fa_cpu;
     Fa_cpu.length = N;
@@ -121,16 +173,24 @@ void main(string[] args)
     auto cpuTime = MonoTime.currTime - startTime;
 
     if (verb > 1) {
-        writeln("Fa_gpu = \n", Fa);
-        writeln("Fa_cpu = \n", Fa_cpu);
+        writeln("Fa_gpu_SHFL = \n", Fa);
+        writeln("Fa_gpu_GM   = \n", Fa_GM);
+        writeln("Fa_gpu_SM   = \n", Fa_SM);
+        writeln("Fa_cpu      = \n", Fa_cpu);
     }
 
     if (verb > 0) {
-        writeln("time for GPU: ", gpuTime);
-        writeln("time for CPU: ", cpuTime);
+        writeln("time for GPU (shfls): ", gpuTime);
+        writeln("time for GPU (G mem): ", gpuTime_GM);
+        writeln("time for GPU (S mem): ", gpuTime_SM);
+        writeln("time for CPU        : ", cpuTime);
 
-        writeln("GPU speed-up: ", cpuTime.total!"usecs"
+        writeln("GPU (shfls) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime.total!"usecs");
+        writeln("GPU (G mem) speed-up: ", cpuTime.total!"usecs"
+                / gpuTime_GM.total!"usecs");
+        writeln("GPU (S mem) speed-up: ", cpuTime.total!"usecs"
+                / gpuTime_SM.total!"usecs");
     }
 
     return;

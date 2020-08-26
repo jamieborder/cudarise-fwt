@@ -5,6 +5,10 @@ DMD ?= dmd
 NVCC ?= nvcc
 GPP ?= g++
 
+NUMFWTS ?= 100
+PA ?= 5
+VERB ?= 1
+
 CUDA_LIB_DIR ?= /usr/local/cuda/lib64
 CUDA_DIR := ../cuda_d
 CUDA_FILES := $(CUDA_DIR)/cublas_api.d \
@@ -33,4 +37,4 @@ install: launchFWT.d fwt.cu
 		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-lphobos2 -L-L. -L-lhwkernel
 
 run:
-	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT) 100 5 1
+	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT) $(NUMFWTS) $(PA) $(VERB)

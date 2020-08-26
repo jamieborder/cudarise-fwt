@@ -1,0 +1,30 @@
+set term "pdf"
+set output "speedups.pdf"
+
+set title ""
+
+CPU     = "#ff0000"
+GPU_mem = "#4671d5"
+GPU     = "#ff0000"
+GPU_GM  = "#ff0000"
+GPU_SM  = "#ff0000"
+
+set xlabel "number of FWTs (Na=32)"
+set ylabel "speed-up vs cpu"
+
+set xtics nomirror
+set ytics nomirror
+
+set logscale y
+set logscale x
+
+set format x "10^{%L}"
+
+set key bottom right
+
+# 2, 3, 4, 5 are the indexes of the columns; 'fc' stands for 'fillcolor'
+plot 'timings.dat' using 1:($2/$2) t "cpu" w lp pt 1 lc 1 lw 1.2, \
+     '' u 1:($2/$3) t "gpu shfl + memcpy"  w lp pt 2 lc 2 lw 1.2, \
+     '' u 1:($2/$4) t "gpu shfl"           w lp pt 3 lc 3 lw 1.2, \
+     '' u 1:($2/$5) t "gpu gMem"           w lp pt 4 lc 4 lw 1.2, \
+     '' u 1:($2/$6) t "gpu sMem"           w lp pt 6 lc 5 lw 1.2, \

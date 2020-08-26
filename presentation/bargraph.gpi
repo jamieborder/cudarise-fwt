@@ -6,6 +6,8 @@ set title ""
 CPU     = "#ff0000"
 GPU_mem = "#4671d5"
 GPU     = "#ff0000"
+GPU_GM  = "#ff0000"
+GPU_SM  = "#ff0000"
 
 set auto x
 # set yrange [0:10]
@@ -25,4 +27,6 @@ set xlabel "number of FWTs (Na=32)"
 # 2, 3, 4, 5 are the indexes of the columns; 'fc' stands for 'fillcolor'
 plot 'timings.dat' using 2:xtic(1) ti col fc rgb "red", \
      '' u 3 ti col fc rgb GPU_mem, \
-     '' u 4 ti col fc rgb GPU
+     '' u 4 ti col fc rgb GPU, \
+     '' u 5 ti col fc rgb GPU_GM, \
+     '' u 6 ti col fc rgb GPU_SM

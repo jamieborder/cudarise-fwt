@@ -1,0 +1,82 @@
+1
+number of FWTs :: 1
+Pa = 5, Na = 32, N = 32
+number of cells :: 16
+time for GPU (shfls): 422 μs and 7 hnsecs
+time for GPU (G mem): 9 μs and 9 hnsecs
+time for CPU        : 7 μs and 2 hnsecs
+GPU (shfls) speed-up: 0
+GPU (G mem) speed-up: 0
+
+10
+number of FWTs :: 10
+Pa = 5, Na = 32, N = 320
+number of cells :: 160
+time for GPU (shfls): 417 μs and 1 hnsec
+time for GPU (G mem): 10 μs and 1 hnsec
+time for CPU        : 52 μs and 3 hnsecs
+GPU (shfls) speed-up: 0
+GPU (G mem) speed-up: 5
+
+100
+number of FWTs :: 100
+Pa = 5, Na = 32, N = 3200
+number of cells :: 1600
+time for GPU (shfls): 442 μs and 3 hnsecs
+time for GPU (G mem): 11 μs and 1 hnsec
+time for CPU        : 513 μs and 9 hnsecs
+GPU (shfls) speed-up: 1
+GPU (G mem) speed-up: 46
+
+1000
+number of FWTs :: 1000
+Pa = 5, Na = 32, N = 32000
+number of cells :: 16000
+time for GPU (shfls): 426 μs and 8 hnsecs
+time for GPU (G mem): 25 μs and 9 hnsecs
+time for CPU        : 6 ms, 614 μs, and 1 hnsec
+GPU (shfls) speed-up: 15
+GPU (G mem) speed-up: 264
+
+10000
+number of FWTs :: 10000
+Pa = 5, Na = 32, N = 320000
+number of cells :: 160000
+time for GPU (shfls): 515 μs and 2 hnsecs
+time for GPU (G mem): 179 μs and 6 hnsecs
+time for CPU        : 49 ms, 862 μs, and 9 hnsecs
+GPU (shfls) speed-up: 96
+GPU (G mem) speed-up: 278
+
+100000
+number of FWTs :: 100000
+Pa = 5, Na = 32, N = 3200000
+number of cells :: 1600000
+time for GPU (shfls): 1 ms, 301 μs, and 6 hnsecs
+time for GPU (G mem): 1 ms, 691 μs, and 4 hnsecs
+time for CPU        : 501 ms, 244 μs, and 7 hnsecs
+GPU (shfls) speed-up: 385
+GPU (G mem) speed-up: 296
+
+1000000
+number of FWTs :: 1000000
+Pa = 5, Na = 32, N = 32000000
+number of cells :: 16000000
+time for GPU (shfls): 10 ms, 137 μs, and 4 hnsecs
+time for GPU (G mem): 16 ms, 730 μs, and 7 hnsecs
+time for CPU        : 5 secs, 136 ms, 413 μs, and 1 hnsec
+GPU (shfls) speed-up: 506
+GPU (G mem) speed-up: 307
+
+10000000
+number of FWTs :: 10000000
+Pa = 5, Na = 32, N = 320000000
+number of cells :: 160000000
+an illegal memory access was encountered
+an illegal memory access was encountered
+time for GPU (shfls): 5 ms and 73 μs
+time for GPU (G mem): 2 μs and 5 hnsecs
+time for CPU        : 52 secs, 89 ms, 203 μs, and 7 hnsecs
+GPU (shfls) speed-up: 10267
+GPU (G mem) speed-up: 26044601
+
