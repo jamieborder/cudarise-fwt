@@ -32,7 +32,7 @@ clean:
 	- rm -f $(OUTPUT)
 
 install: launchFWT.d fwt.cu
-	@$(NVCC) --shared -o libhwkernel.so fwt.cu --compiler-options '-fPIC'  
+	@$(NVCC) --shared -o libhwkernel.so fwt.cu -w --compiler-options '-fPIC'  
 	@$(DMD) -of$(OUTPUT) launchFWT.d -I$(CUDA_DIR)/ $(CUDA_FILES) \
 		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-lphobos2 -L-L. -L-lhwkernel
 

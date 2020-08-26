@@ -1,0 +1,164 @@
+1
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 1
+	Pa = 5, Na = 32, N = 32
+	number of cells = 16
+	verbosity = 1
+---------------
+	time for GPU (shfls): 450 μs and 3 hnsecs
+	time for GPU (G mem): 9 μs and 7 hnsecs
+	time for GPU (S mem): 8 μs and 6 hnsecs
+	time for CPU        : 6 μs and 9 hnsecs
+
+	GPU (shfls) speed-up: 0
+	GPU (G mem) speed-up: 0
+	GPU (S mem) speed-up: 0
+
+	L2 error for GPU (shfls): 5.45841e-12
+	L2 error for GPU (G mem): 5.45841e-12
+	L2 error for GPU (S mem): 5.45841e-12
+
+10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 10
+	Pa = 5, Na = 32, N = 320
+	number of cells = 160
+	verbosity = 1
+---------------
+	time for GPU (shfls): 451 μs and 2 hnsecs
+	time for GPU (G mem): 10 μs
+	time for GPU (S mem): 8 μs and 5 hnsecs
+	time for CPU        : 52 μs and 7 hnsecs
+
+	GPU (shfls) speed-up: 0
+	GPU (G mem) speed-up: 5
+	GPU (S mem) speed-up: 6
+
+	L2 error for GPU (shfls): 2.7665e-11
+	L2 error for GPU (G mem): 2.7665e-11
+	L2 error for GPU (S mem): 2.7665e-11
+
+100
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+---------------
+	time for GPU (shfls): 469 μs and 2 hnsecs
+	time for GPU (G mem): 11 μs and 6 hnsecs
+	time for GPU (S mem): 9 μs and 1 hnsec
+	time for CPU        : 511 μs and 7 hnsecs
+
+	GPU (shfls) speed-up: 1
+	GPU (G mem) speed-up: 46
+	GPU (S mem) speed-up: 56
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+
+1000
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 1000
+	Pa = 5, Na = 32, N = 32000
+	number of cells = 16000
+	verbosity = 1
+---------------
+	time for GPU (shfls): 552 μs and 1 hnsec
+	time for GPU (G mem): 30 μs and 8 hnsecs
+	time for GPU (S mem): 17 μs and 5 hnsecs
+	time for CPU        : 6 ms, 157 μs, and 8 hnsecs
+
+	GPU (shfls) speed-up: 11
+	GPU (G mem) speed-up: 205
+	GPU (S mem) speed-up: 362
+
+	L2 error for GPU (shfls): 2.97708e-09
+	L2 error for GPU (G mem): 2.97708e-09
+	L2 error for GPU (S mem): 2.97708e-09
+
+10000
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 10000
+	Pa = 5, Na = 32, N = 320000
+	number of cells = 160000
+	verbosity = 1
+---------------
+	time for GPU (shfls): 533 μs and 6 hnsecs
+	time for GPU (G mem): 238 μs and 9 hnsecs
+	time for GPU (S mem): 86 μs
+	time for CPU        : 50 ms, 403 μs, and 1 hnsec
+
+	GPU (shfls) speed-up: 94
+	GPU (G mem) speed-up: 211
+	GPU (S mem) speed-up: 586
+
+	L2 error for GPU (shfls): 2.89637e-08
+	L2 error for GPU (G mem): 2.89637e-08
+	L2 error for GPU (S mem): 2.89637e-08
+
+100000
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100000
+	Pa = 5, Na = 32, N = 3200000
+	number of cells = 1600000
+	verbosity = 1
+an illegal memory access was encountered
+---------------
+an illegal memory access was encountered
+	time for GPU (shfls): 1 ms, 218 μs, and 5 hnsecs
+	time for GPU (G mem): 2 ms, 790 μs, and 3 hnsecs
+	time for GPU (S mem): 2 μs and 2 hnsecs
+	time for CPU        : 513 ms, 395 μs, and 6 hnsecs
+
+	GPU (shfls) speed-up: 421
+	GPU (G mem) speed-up: 184
+	GPU (S mem) speed-up: 256697
+
+	L2 error for GPU (shfls): 2.89667e-07
+	L2 error for GPU (G mem): nan
+	L2 error for GPU (S mem): nan
+
+1000000
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 1000000
+	Pa = 5, Na = 32, N = 32000000
+	number of cells = 16000000
+	verbosity = 1
+an illegal memory access was encountered
+---------------
+an illegal memory access was encountered
+	time for GPU (shfls): 8 ms, 270 μs, and 4 hnsecs
+	time for GPU (G mem): 2 ms, 587 μs, and 4 hnsecs
+	time for GPU (S mem): 1 μs and 9 hnsecs
+	time for CPU        : 5 secs, 231 ms, 717 μs, and 6 hnsecs
+
+	GPU (shfls) speed-up: 632
+	GPU (G mem) speed-up: 2022
+	GPU (S mem) speed-up: 5231717
+
+	L2 error for GPU (shfls): 2.90288e-06
+	L2 error for GPU (G mem): nan
+	L2 error for GPU (S mem): nan
+
+10000000
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 10000000
+	Pa = 5, Na = 32, N = 320000000
+	number of cells = 160000000
+	verbosity = 1
+an illegal memory access was encountered
+an illegal memory access was encountered
+---------------
+an illegal memory access was encountered
+	time for GPU (shfls): 3 ms, 158 μs, and 8 hnsecs
+	time for GPU (G mem): 2 μs and 2 hnsecs
+	time for GPU (S mem): 1 μs and 7 hnsecs
+	time for CPU        : 53 secs, 443 ms, 57 μs, and 2 hnsecs
+
+	GPU (shfls) speed-up: 16923
+	GPU (G mem) speed-up: 26721528
+	GPU (S mem) speed-up: 53443057
+
+

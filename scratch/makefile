@@ -1,8 +1,16 @@
-.PHONY: launch seq neq clean pow2
+.PHONY: launch seq neq clean pow2 map mod
 
 # fwt.cu
 launch: launchFWT.d
 	dmd $< -of$@
+	./$@
+
+map: map.d
+	dmd $< -of$@
+	./$@
+
+mod: mod.c
+	gcc $< -o $@
 	./$@
 
 seq: sequency.d

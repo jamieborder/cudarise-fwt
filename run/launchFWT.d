@@ -1,13 +1,13 @@
 extern (C) void run_FWT_SHFL(const int Pa, const int Na, const int N,
-        float *fi, float *Fa, int *seq, const int blockDimX,
+        const float *fi, float *Fa, const int *seq, const int blockDimX,
         const int gridDimX);
 
 extern (C) void run_FWT_GM(const int Pa, const int Na, const int N,
-        float *fi, float *Fa, int *seq, float *vec, const int blockDimX,
-        const int gridDimX);
+        const float *fi, float *Fa, const int *seq, float *vec,
+        const int blockDimX, const int gridDimX);
 
 extern (C) void run_FWT_SM(const int Pa, const int Na, const int N,
-        float *fi, float *Fa, int *seq, const int blockDimX,
+        const float *fi, float *Fa, const int *seq, const int blockDimX,
         const int gridDimX, const int sMemSize);
 
 import std.stdio;
@@ -21,16 +21,13 @@ import cuda_d.cublas_api;
 
 void main(string[] args)
 {
-    // const int numFWTs = 1000000;
-    // const int numFWTs = 1;
-    // const int Pa = 5;
-    // const int Na = 2^^Pa;
-    // const int N  = numFWTs * Na;
     int numFWTs = 1;
     int Pa = 5;
     int verb = 0;
+
+    immutable string helpStr = "./prog [numFWTs] [Pa] [verbosity]";
     if (args.length > 1) {
-        scope(failure) writeln("./prog [numFWTs] [Pa] [verbosity]");
+        scope(failure) writeln(helpStr);
         numFWTs = to!int(args[1]);
         if (args.length > 2) {
             Pa = to!int(args[2]);
@@ -39,13 +36,32 @@ void main(string[] args)
             }
         }
     }
+
     int Na = 2^^Pa;
     int N  = numFWTs * Na;
 
+    long[4] times;
+    long[4] avgs = [0, 0, 0, 0];
+    int numRuns = 10;
+    for (int i=0;i<numRuns;i++) {
+        launchTimings(numFWTs, Pa, Na, N, verb, times);
+        avgs[] += times[];
+    }
+    avgs[] = avgs[] / numRuns; 
+    writefln("   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM");
+    writefln("%10d %7.3f %7.3f  %7.3f %7.3f", numFWTs, avgs[0]/1000.,
+            avgs[1]/1000., avgs[2]/1000., avgs[3]/1000.);
+}
+
+void launchTimings(const int numFWTs, const int Pa, const int Na,
+        const int N, const int verb, ref long[4] times)
+{
     if (verb > 0) {
-        writefln("number of FWTs :: %d", numFWTs);
-        writefln("Pa = %d, Na = %d, N = %d", Pa, Na, N);
-        writefln("number of cells :: %d", Na / 2 * numFWTs);
+        writefln(" ~~ GPU Accelerated Fast Walsh Transform ~~ ");
+        writefln("\tnumber of FWTs = %d", numFWTs);
+        writefln("\tPa = %d, Na = %d, N = %d", Pa, Na, N);
+        writefln("\tnumber of cells = %d", Na / 2 * numFWTs);
+        writefln("\tverbosity = %d", verb);
     }
 
     // calculate sequency mapping (same for each FWT)
@@ -56,6 +72,9 @@ void main(string[] args)
         s[i] = i;
     }
     auto k = getSequence(s, Na, Pa);
+    if (verb > 1) {
+        writeln("k = \n", k);
+    }
 
     int[] seq;
     seq.length = N;
@@ -67,16 +86,13 @@ void main(string[] args)
     // (real data given by discrete function data (fi),
     //  modified as such:
     //   f = fi * dx / sqrt(xb - xa) ... (TODO) )
-    float[] fi, Fa, Fa_GM, Fa_SM;
+    float[] fi, Fa_SHFL, Fa_GM, Fa_SM;
     fi.length = N;
-    Fa.length = N;
+    Fa_SHFL.length = N;
     Fa_GM.length = N;
     Fa_SM.length = N;
     for(int i=0;i<N;i++) {
-        // fi[i] = 0.0;
-        // fi[i] = 1.0;
-        fi[i] = i;
-        // fi[i] = sin(i*0.05);
+        fi[i] = sin(i*0.05);
     }
 
     // calculate cuda blocks / grid required
@@ -84,8 +100,8 @@ void main(string[] args)
     int gridDimX  = (N + 32 - 1) / 32;
 
     if (verb > 1) {
-        writefln("launch with blockDim = (%d, 1, 1)", blockDimX);
-        writefln("launch with  gridDim = (%d, 1, 1)", gridDimX);
+        writefln("\tlaunch with blockDim = (%d, 1, 1)", blockDimX);
+        writefln("\tlaunch with  gridDim = (%d, 1, 1)", gridDimX);
     }
 
     // set-up device side data
@@ -119,7 +135,7 @@ void main(string[] args)
     auto gpuTime = MonoTime.currTime - startTime;
 
     // copy data from device to host
-    cudaMemcpy( cast(void*)Fa, cast(void*)d_Fa, numBytesFloat,
+    cudaMemcpy( cast(void*)Fa_SHFL, cast(void*)d_Fa, numBytesFloat,
             cudaMemcpyKind.cudaMemcpyDeviceToHost );
 
 
@@ -162,6 +178,9 @@ void main(string[] args)
     cudaFree( d_seq );
     cudaFree( d_vec );
 
+
+
+    /// ----- cpu -----
     float[] Fa_cpu;
     Fa_cpu.length = N;
 
@@ -172,26 +191,50 @@ void main(string[] args)
     }
     auto cpuTime = MonoTime.currTime - startTime;
 
+
+
     if (verb > 1) {
-        writeln("Fa_gpu_SHFL = \n", Fa);
+        writeln("Fa_gpu_SHFL = \n", Fa_SHFL);
         writeln("Fa_gpu_GM   = \n", Fa_GM);
         writeln("Fa_gpu_SM   = \n", Fa_SM);
         writeln("Fa_cpu      = \n", Fa_cpu);
     }
 
     if (verb > 0) {
-        writeln("time for GPU (shfls): ", gpuTime);
-        writeln("time for GPU (G mem): ", gpuTime_GM);
-        writeln("time for GPU (S mem): ", gpuTime_SM);
-        writeln("time for CPU        : ", cpuTime);
+        writeln("\ttime for GPU (shfls): ", gpuTime);
+        writeln("\ttime for GPU (G mem): ", gpuTime_GM);
+        writeln("\ttime for GPU (S mem): ", gpuTime_SM);
+        writeln("\ttime for CPU        : ", cpuTime);
+        writeln();
 
-        writeln("GPU (shfls) speed-up: ", cpuTime.total!"usecs"
+        writeln("\tGPU (shfls) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime.total!"usecs");
-        writeln("GPU (G mem) speed-up: ", cpuTime.total!"usecs"
+        writeln("\tGPU (G mem) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime_GM.total!"usecs");
-        writeln("GPU (S mem) speed-up: ", cpuTime.total!"usecs"
+        writeln("\tGPU (S mem) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime_SM.total!"usecs");
+        writeln();
+
+        import std.algorithm.iteration: map, fold;
+
+        float[] diff;
+        diff.length = N;
+
+        diff[] = Fa_SHFL[] - Fa_cpu[];
+        writeln("\tL2 error for GPU (shfls): ",
+                fold!((a, b) => a + b)(map!(a => a^^2.0)(diff)));
+        diff[] = Fa_GM[] - Fa_cpu[];
+        writeln("\tL2 error for GPU (G mem): ",
+                fold!((a, b) => a + b)(map!(a => a^^2.0)(diff)));
+        diff[] = Fa_SM[] - Fa_cpu[];
+        writeln("\tL2 error for GPU (S mem): ",
+                fold!((a, b) => a + b)(map!(a => a^^2.0)(diff)));
     }
+
+    times[0] = cpuTime.total!"usecs";
+    times[1] = gpuTime.total!"usecs";
+    times[2] = gpuTime_GM.total!"usecs";
+    times[3] = gpuTime_SM.total!"usecs";
 
     return;
 }
@@ -207,7 +250,7 @@ int[] getSequence(int[] s, int N, int P)
     }
 
     for (int i=0;i<N;i++) {
-        k[i] = bitReverse(g[i], P);
+        k[bitReverse(g[i], P)] = i;
     }
 
     return k;

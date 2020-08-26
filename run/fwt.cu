@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-__global__ void FWT_SHFL(float *fi, float *Fa, int *seq, const int Pa,
-        const int Na, const int N)
+__global__ void FWT_SHFL(const float *fi, float *Fa, const int *seq,
+        const int Pa, const int Na, const int N)
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;    // thread Id
 
@@ -12,18 +12,18 @@ __global__ void FWT_SHFL(float *fi, float *Fa, int *seq, const int Pa,
 
     // calculate whether mem pull will be made neg
     // [0:1] -> [0:2] -> [-1:1] -> [1:-1]
-    // int negMask = (((tid >> 0) & 1LU) * 2 - 1) * -1;
     int negMask;
 
     // whether to accept shfl this round
     int srcMask;
 
-    seqi = seq[tid];
-
+    // every thread load first piece of data
     if (tid < N) {
-        // F1 = fi[tid];
-        F1 = fi[(tid / 32) * 32 + seqi];
+        F1 = fi[tid];
     }
+
+    // memory pull hidden by next ops
+    seqi = seq[tid];
 
     int Nm = Na/2;
     for(int pm=0;pm<Pa;pm++) {
@@ -32,52 +32,34 @@ __global__ void FWT_SHFL(float *fi, float *Fa, int *seq, const int Pa,
 
         // calculate src mask
         srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
-        // if (tid == 2) {
-            // printf("tid:%d, pm=%d, srcMask=%d, Nm=%d, negMask=%d\n",
-                    // tid, pm, srcMask, Nm, negMask);
-        // }
 
         // apply warp shuffle down
         F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
 
         // flip mask
         srcMask ^= 1LU;
-        // if (tid == 2) {
-            // printf("tid:%d, pm=%d, srcMask=%d, Nm=%d, negMask=%d\n",
-                    // tid, pm, srcMask, Nm, negMask);
-        // }
-
-        // if (tid == 7) {
-            // printf("F1=%f, F2=%f\n", F1, F2);
-        // }
 
         // apply warp shuffle up
         F2 += srcMask * __shfl_up_sync(0xFFFFFFFF, F1, Nm);
-
-        // if (tid == 2) {
-            // printf("F1=%f, F2=%f\n", F1, F2);
-        // }
 
         // add to existing warp value, using negMask
         F1 = F1 * negMask + F2;
 
         // update shfl width
-        // Nm <<= 1;
         Nm >>= 1;
     }
 
     // write to global memory
     if (tid < N) {
-        // Fa[(tid / 32) * 32 + seqi] = F1;
-        Fa[tid] = F1;
+        Fa[(tid / 32) * 32 + seqi] = F1;
     }
 
     return;
 }
 
 // global memory version
-__global__ void FWT_GM(float *fi, float *Fa, int *seq, const int Pa,
-        const int Na, const int N, float *F1_global)
+__global__ void FWT_GM(const float *fi, float *Fa, const int *seq,
+        const int Pa, const int Na, const int N, float *F1_global)
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;    // thread Id
     int lid = tid % 32;
@@ -94,12 +76,12 @@ __global__ void FWT_GM(float *fi, float *Fa, int *seq, const int Pa,
     // whether to accept shfl this round
     int srcMask;
 
-    // trying to hide memory pull with ops (not anymore lol)
+    // memory pull hidden by next ops
     seqi = seq[tid];
 
     // every thread load first piece of data
     if (tid < N) {
-        F1 = fi[(tid / 32) * 32 + seqi];
+        F1 = fi[tid];
     }
 
     // now write all data to global memory so all threads can get it
@@ -114,15 +96,13 @@ __global__ void FWT_GM(float *fi, float *Fa, int *seq, const int Pa,
         srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
 
         // apply warp shuffle down
-        F2 = srcMask * F1_global[(tid / 32) * 32 + (lid - Nm) % 32];
-        // F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
+        F2 = srcMask * F1_global[(tid / 32) * 32 + (lid + Nm) % 32];
 
         // flip mask
         srcMask ^= 1LU;
 
         // apply warp shuffle up
-        F2 = srcMask * F1_global[(tid / 32) * 32 + (lid + Nm) % 32];
-        // F2 += srcMask * __shfl_up_sync(0xFFFFFFFF, F1, Nm);
+        F2 += srcMask * F1_global[(tid / 32) * 32 + (lid - Nm) % 32];
 
         // add to existing warp value, using negMask
         F1 = F1 * negMask + F2;
@@ -136,15 +116,15 @@ __global__ void FWT_GM(float *fi, float *Fa, int *seq, const int Pa,
 
     // write to global memory
     if (tid < N) {
-        Fa[tid] = F1;
+        Fa[(tid / 32) * 32 + seqi] = F1;
     }
 
     return;
 }
 
 // shared memory version
-__global__ void FWT_SM(float *fi, float *Fa, int *seq, const int Pa,
-        const int Na, const int N)
+__global__ void FWT_SM(const float *fi, float *Fa, const int *seq,
+        const int Pa, const int Na, const int N)
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;    // thread Id
     int lid = tid % 32;
@@ -163,12 +143,12 @@ __global__ void FWT_SM(float *fi, float *Fa, int *seq, const int Pa,
     // whether to accept shfl this round
     int srcMask;
 
-    // trying to hide memory pull with ops (not anymore lol)
+    // memory pull hidden by next ops
     seqi = seq[tid];
 
     // every thread load first piece of data
     if (tid < N) {
-        F1 = fi[(tid / 32) * 32 + seqi];
+        F1 = fi[tid];
     }
 
     // now write all data to global memory so all threads can get it
@@ -183,15 +163,13 @@ __global__ void FWT_SM(float *fi, float *Fa, int *seq, const int Pa,
         srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
 
         // apply warp shuffle down
-        F2 = srcMask * F1_shared[(lid - Nm) % 32];
-        // F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
+        F2 = srcMask * F1_shared[(lid + Nm) % 32];
 
         // flip mask
         srcMask ^= 1LU;
 
         // apply warp shuffle up
-        F2 = srcMask * F1_shared[(lid + Nm) % 32];
-        // F2 += srcMask * __shfl_up_sync(0xFFFFFFFF, F1, Nm);
+        F2 += srcMask * F1_shared[(lid - Nm + 32) % 32];
 
         // add to existing warp value, using negMask
         F1 = F1 * negMask + F2;
@@ -205,7 +183,7 @@ __global__ void FWT_SM(float *fi, float *Fa, int *seq, const int Pa,
 
     // write to global memory
     if (tid < N) {
-        Fa[tid] = F1;
+        Fa[(tid / 32) * 32 + seqi] = F1;
     }
 
     return;
@@ -213,8 +191,8 @@ __global__ void FWT_SM(float *fi, float *Fa, int *seq, const int Pa,
 
 extern "C"
 {
-    void run_FWT_SHFL(const int Pa, const int Na, const int N, float *fi,
-            float *Fa, int *seq, const int blockDimX, const int gridDimX)
+    void run_FWT_SHFL(const int Pa, const int Na, const int N, const float *fi,
+            float *Fa, const int *seq, const int blockDimX, const int gridDimX)
     {
         dim3 blockSize(blockDimX, 1, 1);
         dim3 gridSize( gridDimX, 1, 1);
@@ -228,8 +206,8 @@ extern "C"
         }
     }
 
-    void run_FWT_GM(const int Pa, const int Na, const int N, float *fi,
-            float *Fa, int *seq, float *vec, const int blockDimX,
+    void run_FWT_GM(const int Pa, const int Na, const int N, const float *fi,
+            float *Fa, const int *seq, float *vec, const int blockDimX,
             const int gridDimX)
     {
         dim3 blockSize(blockDimX, 1, 1);
@@ -244,8 +222,8 @@ extern "C"
         }
     }
 
-    void run_FWT_SM(const int Pa, const int Na, const int N, float *fi,
-            float *Fa, int *seq, const int blockDimX, const int gridDimX,
+    void run_FWT_SM(const int Pa, const int Na, const int N, const float *fi,
+            float *Fa, const int *seq, const int blockDimX, const int gridDimX,
             const int sMemSize)
     {
         dim3 blockSize(blockDimX, 1, 1);
