@@ -24,8 +24,10 @@ void main(string[] args)
     int numFWTs = 1;
     int Pa = 5;
     int verb = 0;
+    int numRuns = 10;
 
-    immutable string helpStr = "./prog [numFWTs] [Pa] [verbosity]";
+    immutable string helpStr =
+        "./prog [numFWTs, [Pa, [verbosity, [numRuns]]]]";
     if (args.length > 1) {
         scope(failure) writeln(helpStr);
         numFWTs = to!int(args[1]);
@@ -33,6 +35,9 @@ void main(string[] args)
             Pa = to!int(args[2]);
             if (args.length > 3) {
                 verb = to!int(args[3]);
+                if (args.length > 4) {
+                    numRuns = to!int(args[4]);
+                }
             }
         }
     }
@@ -42,7 +47,6 @@ void main(string[] args)
 
     long[4] times;
     long[4] avgs = [0, 0, 0, 0];
-    int numRuns = 10;
     for (int i=0;i<numRuns;i++) {
         launchTimings(numFWTs, Pa, Na, N, verb, times);
         avgs[] += times[];
