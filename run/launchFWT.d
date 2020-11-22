@@ -185,7 +185,11 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
     cudaFree( d_seq );
     cudaFree( d_vec );
 
-
+    /*
+    for(int i=0;i<Na;++i) {
+        fi[i] = i * 1.0f;
+    }
+    */
 
     /// ----- cpu -----
     float[] Fa_cpu;
@@ -198,13 +202,31 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
     }
     auto cpuTime = MonoTime.currTime - startTime;
 
+    /*
+    for (int i=0;i<Na;++i) {
+        printf("cpu : %d : %f\n", i, Fa_cpu[i]);
+    }
+    */
+
     /// ----- cpu simd -----
     float[] Fa_simd;
     Fa_simd.length = N;
 
-    startTime = MonoTime.currTime;
-    run_FWT_SIMD(Pa, Na, N, &(fi[0]), &(Fa_simd[0]), &(seq[0]));
+    if (Na != 8) {
+        printf("WARNING! CPU_SIMD not designed for Na!=8. Skipping...\n");
+        startTime = MonoTime.currTime;
+    }
+    else {
+        startTime = MonoTime.currTime;
+        run_FWT_SIMD(Pa, Na, N, &(fi[0]), &(Fa_simd[0]), &(seq[0]));
+    }
     auto simdTime = MonoTime.currTime - startTime;
+
+    /*
+    for (int i=0;i<Na;++i) {
+        printf("simd: %d : %f\n", i, Fa_simd[i]);
+    }
+    */
 
 
     if (verb > 1) {

@@ -150,8 +150,14 @@ void simd_FWT(float *fi, float *Fa, int *seqArr, const int Pa, const int Na)
         Nm = _mm256_srlv_epi32(Nm, one);
     }
 
-    // printf("pm = %d, F1 = \n", pm);
-    // view8floats(F1);
+    __attribute__ ((aligned (32))) float output[8];
+    _mm256_store_ps(output, F1);
+
+    printf(""); // WEIRD! core dumps unless something is here.. DEBUG
+
+    for (int i=0; i<Na; ++i) {
+        Fa[i] = output[i];
+    }
 }
 
 void getSequence(int *s, int N, int P, int *seq)
