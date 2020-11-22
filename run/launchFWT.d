@@ -10,6 +10,9 @@ extern (C) void run_FWT_SM(const int Pa, const int Na, const int N,
         const float *fi, float *Fa, const int *seq, const int blockDimX,
         const int gridDimX, const int sMemSize);
 
+extern(C) void run_FWT_SIMD(const int Pa, const int Na, const int N,
+        const float *fi, float *Fa, const int *seq);
+
 import std.stdio;
 import std.math: sin;
 import std.datetime: MonoTime;
@@ -45,20 +48,20 @@ void main(string[] args)
     int Na = 2^^Pa;
     int N  = numFWTs * Na;
 
-    long[4] times;
-    long[4] avgs = [0, 0, 0, 0];
+    long[5] times;
+    long[5] avgs = [0, 0, 0, 0, 0];
     for (int i=0;i<numRuns;i++) {
         launchTimings(numFWTs, Pa, Na, N, verb, times);
         avgs[] += times[];
     }
     avgs[] = avgs[] / numRuns; 
-    writefln("   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM");
-    writefln("%10d %7.3f %7.3f  %7.3f %7.3f", numFWTs, avgs[0]/1000.,
-            avgs[1]/1000., avgs[2]/1000., avgs[3]/1000.);
+    writefln("   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM cpu_SIMD (ms)");
+    writefln("%10d %7.3f %7.3f  %7.3f %7.3f %7.3f", numFWTs, avgs[0]/1000.,
+            avgs[1]/1000., avgs[2]/1000., avgs[3]/1000., avgs[4]/1000.);
 }
 
 void launchTimings(const int numFWTs, const int Pa, const int Na,
-        const int N, const int verb, ref long[4] times)
+        const int N, const int verb, ref long[5] times)
 {
     if (verb > 0) {
         writefln(" ~~ CUDA Accelerated Fast Walsh Transform ~~ ");
@@ -195,6 +198,13 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
     }
     auto cpuTime = MonoTime.currTime - startTime;
 
+    /// ----- cpu simd -----
+    float[] Fa_simd;
+    Fa_simd.length = N;
+
+    startTime = MonoTime.currTime;
+    run_FWT_SIMD(Pa, Na, N, &(fi[0]), &(Fa_simd[0]), &(seq[0]));
+    auto simdTime = MonoTime.currTime - startTime;
 
 
     if (verb > 1) {
@@ -202,6 +212,7 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
         writeln("Fa_gpu_GM   = \n", Fa_GM);
         writeln("Fa_gpu_SM   = \n", Fa_SM);
         writeln("Fa_cpu      = \n", Fa_cpu);
+        writeln("Fa_simd     = \n", Fa_simd);
     }
 
     if (verb > 0) {
@@ -209,6 +220,7 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
         writeln("\ttime for GPU (G mem): ", gpuTime_GM);
         writeln("\ttime for GPU (S mem): ", gpuTime_SM);
         writeln("\ttime for CPU        : ", cpuTime);
+        writeln("\ttime for CPU (SIMD) : ", simdTime);
         writeln();
 
         writeln("\tGPU (shfls) speed-up: ", cpuTime.total!"usecs"
@@ -217,6 +229,8 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
                 / gpuTime_GM.total!"usecs");
         writeln("\tGPU (S mem) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime_SM.total!"usecs");
+        writeln("\tCPU (SIMD) speed-up : ", cpuTime.total!"usecs"
+                / simdTime.total!"usecs");
         writeln();
 
         import std.algorithm.iteration: map, fold;
@@ -233,12 +247,16 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
         diff[] = Fa_SM[] - Fa_cpu[];
         writeln("\tL2 error for GPU (S mem): ",
                 fold!((a, b) => a + b)(map!(a => a^^2.0)(diff)));
+        diff[] = Fa_simd[] - Fa_cpu[];
+        writeln("\tL2 error for CPU (SIMD) : ",
+                fold!((a, b) => a + b)(map!(a => a^^2.0)(diff)));
     }
 
     times[0] = cpuTime.total!"usecs";
     times[1] = gpuTime.total!"usecs";
     times[2] = gpuTime_GM.total!"usecs";
     times[3] = gpuTime_SM.total!"usecs";
+    times[4] = simdTime.total!"usecs";
 
     return;
 }
