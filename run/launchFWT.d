@@ -217,6 +217,7 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
         startTime = MonoTime.currTime;
     }
     else {
+        printf("WARNING! CPU_SIMD result is ordered incorrectly...\n");
         startTime = MonoTime.currTime;
         run_FWT_SIMD(Pa, Na, N, &(fi[0]), &(Fa_simd[0]), &(seq[0]));
     }
