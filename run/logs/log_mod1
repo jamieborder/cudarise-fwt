@@ -1,0 +1,172 @@
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 480 μs and 2 hnsecs
+	time for GPU (G mem): 15 μs and 3 hnsecs
+	time for GPU (S mem): 13 μs and 1 hnsec
+	time for CPU        : 476 μs and 2 hnsecs
+
+	GPU (shfls) speed-up: 0
+	GPU (G mem) speed-up: 31
+	GPU (S mem) speed-up: 36
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 8 hnsecs
+	time for GPU (G mem): 13 μs and 1 hnsec
+	time for GPU (S mem): 10 μs and 9 hnsecs
+	time for CPU        : 533 μs and 3 hnsecs
+
+	GPU (shfls) speed-up: 44
+	GPU (G mem) speed-up: 41
+	GPU (S mem) speed-up: 53
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 8 hnsecs
+	time for GPU (G mem): 12 μs and 8 hnsecs
+	time for GPU (S mem): 11 μs
+	time for CPU        : 472 μs and 1 hnsec
+
+	GPU (shfls) speed-up: 39
+	GPU (G mem) speed-up: 39
+	GPU (S mem) speed-up: 42
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 4 hnsecs
+	time for GPU (G mem): 12 μs and 7 hnsecs
+	time for GPU (S mem): 10 μs and 9 hnsecs
+	time for CPU        : 604 μs and 6 hnsecs
+
+	GPU (shfls) speed-up: 50
+	GPU (G mem) speed-up: 50
+	GPU (S mem) speed-up: 60
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 31 μs and 7 hnsecs
+	time for GPU (G mem): 18 μs and 7 hnsecs
+	time for GPU (S mem): 22 μs and 3 hnsecs
+	time for CPU        : 618 μs and 1 hnsec
+
+	GPU (shfls) speed-up: 19
+	GPU (G mem) speed-up: 34
+	GPU (S mem) speed-up: 28
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 13 μs and 1 hnsec
+	time for GPU (G mem): 13 μs and 1 hnsec
+	time for GPU (S mem): 10 μs and 7 hnsecs
+	time for CPU        : 507 μs and 5 hnsecs
+
+	GPU (shfls) speed-up: 39
+	GPU (G mem) speed-up: 39
+	GPU (S mem) speed-up: 50
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 4 hnsecs
+	time for GPU (G mem): 12 μs and 6 hnsecs
+	time for GPU (S mem): 10 μs and 8 hnsecs
+	time for CPU        : 472 μs and 4 hnsecs
+
+	GPU (shfls) speed-up: 39
+	GPU (G mem) speed-up: 39
+	GPU (S mem) speed-up: 47
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 5 hnsecs
+	time for GPU (G mem): 12 μs and 4 hnsecs
+	time for GPU (S mem): 10 μs and 6 hnsecs
+	time for CPU        : 472 μs
+
+	GPU (shfls) speed-up: 39
+	GPU (G mem) speed-up: 39
+	GPU (S mem) speed-up: 47
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 12 μs and 5 hnsecs
+	time for GPU (G mem): 12 μs and 5 hnsecs
+	time for GPU (S mem): 10 μs and 9 hnsecs
+	time for CPU        : 1 ms, 221 μs, and 1 hnsec
+
+	GPU (shfls) speed-up: 101
+	GPU (G mem) speed-up: 101
+	GPU (S mem) speed-up: 122
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+ ~~ GPU Accelerated Fast Walsh Transform ~~ 
+	number of FWTs = 100
+	Pa = 5, Na = 32, N = 3200
+	number of cells = 1600
+	verbosity = 1
+	time for GPU (shfls): 13 μs and 9 hnsecs
+	time for GPU (G mem): 12 μs and 7 hnsecs
+	time for GPU (S mem): 25 μs and 4 hnsecs
+	time for CPU        : 543 μs and 6 hnsecs
+
+	GPU (shfls) speed-up: 41
+	GPU (G mem) speed-up: 45
+	GPU (S mem) speed-up: 21
+
+	L2 error for GPU (shfls): 2.62125e-10
+	L2 error for GPU (G mem): 2.62125e-10
+	L2 error for GPU (S mem): 2.62125e-10
+   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM
+       100   0.591   0.060    0.013   0.013

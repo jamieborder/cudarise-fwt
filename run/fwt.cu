@@ -27,11 +27,11 @@ __global__ void FWT_SHFL(const float *fi, float *Fa, const int *seq,
 
     int Nm = Na/2;
     for(int pm=0;pm<Pa;pm++) {
-        // calculate negMask
-        negMask = (((tid >> (Pa-pm-1)) & 1LU) * 2 - 1) * -1;    // 1 or -1
-
         // calculate src mask
         srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
+
+        // calculate negMask
+        negMask = (((tid >> (Pa-pm-1)) & 1LU) * 2 - 1) * -1;    // 1 or -1
 
         // apply warp shuffle down
         F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
