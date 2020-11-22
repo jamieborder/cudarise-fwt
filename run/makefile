@@ -8,6 +8,7 @@ GPP ?= g++
 NUMFWTS ?= 100
 PA ?= 5
 VERB ?= 1
+NUMRUNS ?= 10
 
 CUDA_LIB_DIR ?= /usr/local/cuda/lib64
 CUDA_DIR := ../cuda_d
@@ -25,6 +26,8 @@ CUDA_FILES := $(CUDA_DIR)/cublas_api.d \
 
 OUTPUT = prog
 
+.PHONY: clean install run
+
 clean:
 	- rm -f *.o
 	- rm -f *.so
@@ -34,7 +37,10 @@ clean:
 install: launchFWT.d fwt.cu
 	@$(NVCC) --shared -o libhwkernel.so fwt.cu -w --compiler-options '-fPIC'  
 	@$(DMD) -of$(OUTPUT) launchFWT.d -I$(CUDA_DIR)/ $(CUDA_FILES) \
-		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-lphobos2 -L-L. -L-lhwkernel
+		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-L. -L-lhwkernel
 
-run:
-	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT) $(NUMFWTS) $(PA) $(VERB)
+# for some reason, phobos2 giving me grief on workstation
+# -L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-lphobos2 -L-L. -L-lhwkernel
+
+run: install
+	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:. ./$(OUTPUT) $(NUMFWTS) $(PA) $(VERB) $(NUMRUNS)
