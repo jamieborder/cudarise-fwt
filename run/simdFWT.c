@@ -47,39 +47,15 @@ void run_FWT_SIMD(const int Pa, const int Na, const int N,
 
 void simd_FWT(float *fi, float *Fa, int *seqArr, const int Pa, const int Na)
 {
-    // __m256 F1[4];
-    // __m256 F2[4];
+    __m256 F1, F2;
 
-    // __m256i seq[4];
-    // __m256i srcMask[4];
-    // __m256i negMask[4];
-
-    // for (int i=0; i<Na; i+=8) {
-        // F1[i] = __m256_set_ps(
-                // fi[0+i], fi[1+i], fi[2+i], fi[3+i],
-                // fi[4+i], fi[5+i], fi[6+i], fi[7+i]);
-    // }
-
-    // -----
-
-    __m256 F1;
-    __m256 F2;
-
-    __m256i lid;
-    __m256i seq;
-    __m256i srcMask;
-    __m256i negMask;
+    __m256i lid, seq, srcMask, negMask;
 
     __m256i a;
-    __m256i one;
-    __m256i two;
-    __m256i negOne;
-    __m256i Nm;
-
-    one = _mm256_set1_epi32(1);
-    two = _mm256_set1_epi32(2);
-    negOne = _mm256_set1_epi32(-1);
-    Nm = _mm256_set1_epi32(Na/2);
+    __m256i one = _mm256_set1_epi32(1);
+    __m256i two = _mm256_set1_epi32(2);
+    __m256i negOne = _mm256_set1_epi32(-1);
+    __m256i Nm = _mm256_set1_epi32(Na/2);
 
     // setr because Intel has it flipped
     F1 = _mm256_setr_ps(fi[0], fi[1], fi[2], fi[3], fi[4], fi[5], fi[6],
@@ -97,56 +73,60 @@ void simd_FWT(float *fi, float *Fa, int *seqArr, const int Pa, const int Na)
         a = _mm256_set1_epi32(Pa-pm-1);
 
         // -- srcMask --
-        // bitwise shift right by 'a'
-        srcMask = _mm256_srlv_epi32(lid, a);
-        // bitwise and
+        // srcMask = ((tid >> (Pa-pm-1)) & 1LU) ^ 1LU; // 0 or 1
         srcMask = _mm256_castps_si256(
-            _mm256_and_ps(_mm256_castsi256_ps(srcMask), _mm256_castsi256_ps(one)));
-        // bitwise xor
-        srcMask = _mm256_castps_si256(
-            _mm256_xor_ps(_mm256_castsi256_ps(srcMask), _mm256_castsi256_ps(one)));
+                     _mm256_xor_ps(
+                        _mm256_and_ps(
+                           _mm256_castsi256_ps(
+                              _mm256_srlv_epi32(lid, a)),
+                           _mm256_castsi256_ps(one)),
+                        _mm256_castsi256_ps(one)));
 
 
         // -- negMask --
-        // bitwise shift right by 'a'
-        negMask = _mm256_srlv_epi32(lid, a);
-        // bitwise and
-        negMask = _mm256_castps_si256(
-                _mm256_and_ps(_mm256_castsi256_ps(negMask), _mm256_castsi256_ps(one)));
-        // mult by 2
-        negMask = _mm256_mullo_epi32(negMask, two);
-        // take 1
-        negMask = _mm256_sub_epi32(negMask, one);
-        // mult by neg 1
-        negMask = _mm256_mullo_epi32(negMask, negOne);
-
+        // negmask = (((tid >> (pa-pm-1)) & 1lu) * 2 - 1) * -1;    // 1 or -1
+        negMask = _mm256_mullo_epi32(
+                     _mm256_sub_epi32(
+                        _mm256_mullo_epi32(
+                           _mm256_castps_si256(
+                              _mm256_and_ps(
+                                 _mm256_castsi256_ps(
+                                    _mm256_srlv_epi32(lid, a)),
+                                 _mm256_castsi256_ps(one))),
+                           two),
+                        one),
+                     negOne);
 
         // -- shuffle down --
-        F2 = _mm256_permutevar8x32_ps(F1, _mm256_add_epi32(lid, Nm));
-        F2 = _mm256_mul_ps(_mm256_cvtepi32_ps(srcMask), F2);
-
+        // F2 = srcMask * __shfl_down_sync(0xFFFFFFFF, F1, Nm);
+        F2 = _mm256_mul_ps(
+                _mm256_cvtepi32_ps(srcMask),
+                _mm256_permutevar8x32_ps(F1,
+                   _mm256_add_epi32(lid, Nm)));
         
         // -- flip mask --
+        // srcMask ^= 1LU;
         srcMask = _mm256_castps_si256(
-            _mm256_xor_ps(_mm256_castsi256_ps(srcMask), _mm256_castsi256_ps(one)));
-
+                    _mm256_xor_ps(
+                      _mm256_castsi256_ps(srcMask), 
+                      _mm256_castsi256_ps(one)));
 
         // -- shuffle up --
+        // F2 += srcMask * __shfl_up_sync(0xFFFFFFFF, F1, Nm);
         F2 = _mm256_add_ps(F2,
                 _mm256_mul_ps(
-                    _mm256_cvtepi32_ps(srcMask),
-                        _mm256_permutevar8x32_ps(F1,
-                            _mm256_sub_epi32(lid, Nm))));
-
+                   _mm256_cvtepi32_ps(srcMask),
+                      _mm256_permutevar8x32_ps(F1,
+                         _mm256_sub_epi32(lid, Nm))));
 
         // -- add to existing value using negMask --
+        // F1 = F1 * negMask + F2;
         F1 = _mm256_add_ps(
                 _mm256_mul_ps(F1,
-                    _mm256_cvtepi32_ps(negMask)), F2);
-
+                   _mm256_cvtepi32_ps(negMask)), F2);
 
         // -- update shfl width --
-        // right shift by 1
+        // Nm >>= 1;
         Nm = _mm256_srlv_epi32(Nm, one);
     }
 
@@ -205,3 +185,19 @@ void view8ints(__m256i a)
          output[0], output[1], output[2], output[3],
          output[4], output[5], output[6], output[7]);
 }
+
+    // __m256 F1[4];
+    // __m256 F2[4];
+
+    // __m256i seq[4];
+    // __m256i srcMask[4];
+    // __m256i negMask[4];
+
+    // for (int i=0; i<Na; i+=8) {
+        // F1[i] = __m256_set_ps(
+                // fi[0+i], fi[1+i], fi[2+i], fi[3+i],
+                // fi[4+i], fi[5+i], fi[6+i], fi[7+i]);
+    // }
+
+    // -----
+
