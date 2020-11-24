@@ -1,0 +1,92 @@
+cpuTime.total!"nsecs"  = 16800
+simdTime.total!"nsecs" = 3900
+cpuTime.total!"nsecs"  = 5600
+simdTime.total!"nsecs" = 800
+cpuTime.total!"nsecs"  = 5300
+simdTime.total!"nsecs" = 900
+cpuTime.total!"nsecs"  = 5200
+simdTime.total!"nsecs" = 800
+cpuTime.total!"nsecs"  = 5200
+simdTime.total!"nsecs" = 900
+cpuTime.total!"nsecs"  = 12600
+simdTime.total!"nsecs" = 900
+cpuTime.total!"nsecs"  = 5100
+simdTime.total!"nsecs" = 1000
+cpuTime.total!"nsecs"  = 5200
+simdTime.total!"nsecs" = 1000
+cpuTime.total!"nsecs"  = 5000
+simdTime.total!"nsecs" = 800
+cpuTime.total!"nsecs"  = 5000
+simdTime.total!"nsecs" = 800
+   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM cpu_SIMD (ms)
+         1   0.006   0.891    0.014   0.012   0.000
+cpuTime.total!"nsecs"  = 22200
+simdTime.total!"nsecs" = 5300
+cpuTime.total!"nsecs"  = 17300
+simdTime.total!"nsecs" = 2300
+cpuTime.total!"nsecs"  = 14100
+simdTime.total!"nsecs" = 8400
+cpuTime.total!"nsecs"  = 18200
+simdTime.total!"nsecs" = 2400
+cpuTime.total!"nsecs"  = 16800
+simdTime.total!"nsecs" = 2300
+cpuTime.total!"nsecs"  = 14100
+simdTime.total!"nsecs" = 2200
+cpuTime.total!"nsecs"  = 22500
+simdTime.total!"nsecs" = 2300
+cpuTime.total!"nsecs"  = 13800
+simdTime.total!"nsecs" = 2200
+cpuTime.total!"nsecs"  = 14100
+simdTime.total!"nsecs" = 2200
+cpuTime.total!"nsecs"  = 18000
+simdTime.total!"nsecs" = 2400
+   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM cpu_SIMD (ms)
+        10   0.016   0.720    0.009   0.008   0.002
+cpuTime.total!"nsecs"  = 156200
+simdTime.total!"nsecs" = 25800
+cpuTime.total!"nsecs"  = 156000
+simdTime.total!"nsecs" = 20400
+cpuTime.total!"nsecs"  = 140600
+simdTime.total!"nsecs" = 20400
+cpuTime.total!"nsecs"  = 139400
+simdTime.total!"nsecs" = 20200
+cpuTime.total!"nsecs"  = 139400
+simdTime.total!"nsecs" = 20700
+cpuTime.total!"nsecs"  = 145800
+simdTime.total!"nsecs" = 20400
+cpuTime.total!"nsecs"  = 138900
+simdTime.total!"nsecs" = 20300
+cpuTime.total!"nsecs"  = 138800
+simdTime.total!"nsecs" = 20400
+cpuTime.total!"nsecs"  = 139600
+simdTime.total!"nsecs" = 20400
+cpuTime.total!"nsecs"  = 141200
+simdTime.total!"nsecs" = 20200
+   numFWTs     cpu gpu_SHFL  gpu_GM  gpu_SM cpu_SIMD (ms)
+       100   0.143   0.690    0.009   0.009   0.020
+
+
+simdTime.total!"nsecs"
+3900
+800
+900
+800
+900
+900
+1000
+1000
+800
+800
+
+
+cpuTime.total!"nsecs"
+16800
+5600
+5300
+5200
+5200
+12600
+5100
+5200
+5000
+5000
