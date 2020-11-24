@@ -26,8 +26,8 @@ set key bottom right
 # plot 'timings_simd_goliath2' using 1:($2/$2) t "cpu" w lp pt 1 lc 1 lw 1.2, \
 # plot 'timings.dat' using 1:($2/$2) t "cpu" w lp pt 1 lc 1 lw 1.2, \
 
-plot 'timings.dat' using 1:($2/$2) t "cpu" w lp pt 1 lc 1 lw 1.2, \
-     '' u 1:($2/$3) t "gpu shfl"           w lp pt 3 lc 3 lw 1.2, \
-     '' u 1:($2/$4) t "gpu gMem"           w lp pt 4 lc 4 lw 1.2, \
-     '' u 1:($2/$5) t "gpu sMem"           w lp pt 6 lc 5 lw 1.2, \
-     'timings_simd_goliath2' every ::::7 u 1:($2/$6) t "cpu simd" w lp pt 8 lc 7 lw 1.2, \
+plot 'timings.dat' using 1:($2/$2) t "cpu" w lp pt 2 lc 1 lw 1.4, \
+     '' u 1:($2/$3) t "gpu shfl"           w lp pt 3 lc 3 lw 1.4, \
+     '' u 1:($2/$4) t "gpu gMem"           w lp pt 4 lc 4 lw 1.4, \
+     '' u 1:($2/$5) t "gpu sMem"           w lp pt 6 lc 2 lw 1.4, \
+     'timings_simd_goliath2' every ::::7 u 1:($2/$6) t "cpu simd" w lp pt 8 lc 7 lw 1.4
