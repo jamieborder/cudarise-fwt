@@ -36,7 +36,7 @@ clean:
 	- rm -f $(OUTPUT)
 
 install: launchFWT.d fwt.cu simdFWT.c
-	@$(GCC) -mavx2 -c simdFWT.c
+	@$(GCC) -std=c99 -mavx2 -c simdFWT.c
 	@$(NVCC) --shared -o libhwkernel.so fwt.cu -w --compiler-options '-fPIC'  
 	@$(DMD) -of$(OUTPUT) launchFWT.d simdFWT.o -I$(CUDA_DIR)/ $(CUDA_FILES) \
 		-L-L$(CUDA_LIB_DIR) -L-lcuda -L-lcudart -L-L. -L-lhwkernel
