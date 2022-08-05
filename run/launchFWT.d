@@ -104,7 +104,9 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
 
     // calculate cuda blocks / grid required
     int blockDimX = 32;
-    int gridDimX  = (N + 32 - 1) / 32;
+    // int blockDimX = 64;
+    // int blockDimX = 128;
+    int gridDimX  = (N + blockDimX - 1) / blockDimX;
 
     if (verb > 1) {
         writefln("\tlaunch with blockDim = (%d, 1, 1)", blockDimX);
@@ -163,7 +165,7 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
 
 
     /// ----- shared memory -----
-    int sMemSize = to!int(Na * int.sizeof);
+    int sMemSize = to!int(Na * float.sizeof);
     startTime = MonoTime.currTime;
 
     // run kernel
@@ -252,8 +254,10 @@ void launchTimings(const int numFWTs, const int Pa, const int Na,
                 / gpuTime_GM.total!"usecs");
         writeln("\tGPU (S mem) speed-up: ", cpuTime.total!"usecs"
                 / gpuTime_SM.total!"usecs");
-        writeln("\tCPU (SIMD) speed-up : ", cpuTime.total!"usecs"
-                / simdTime.total!"usecs");
+        if (Na == 8) {
+            writeln("\tCPU (SIMD) speed-up : ", cpuTime.total!"usecs"
+                    / simdTime.total!"usecs");
+        }
         writeln();
 
         import std.algorithm.iteration: map, fold;

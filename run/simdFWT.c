@@ -82,7 +82,6 @@ void simd_FWT(float *fi, float *Fa, int *seqArr, const int Pa, const int Na)
                            _mm256_castsi256_ps(one)),
                         _mm256_castsi256_ps(one)));
 
-
         // -- negMask --
         // negmask = (((tid >> (pa-pm-1)) & 1lu) * 2 - 1) * -1;    // 1 or -1
         negMask = _mm256_mullo_epi32(
@@ -139,6 +138,7 @@ void simd_FWT(float *fi, float *Fa, int *seqArr, const int Pa, const int Na)
         Fa[i] = output[i];
     }
 }
+
 
 void getSequence(int *s, int N, int P, int *seq)
 {
